@@ -60,7 +60,12 @@ function requireAuth(req: AuthenticatedRequest, res: Response, next: NextFunctio
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+
+  // ==========================================
+  // SERVER CONFIGURATION (env-configurable)
+  // ==========================================
+  const PORT = Number(process.env.PORT) || 3000;
+  const HOST = process.env.HOST || '0.0.0.0';
 
   app.use(express.json());
 
@@ -374,8 +379,12 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`ShoppyVault server running at http://0.0.0.0:${PORT}`);
+  app.listen(PORT, HOST, () => {
+    const displayHost = HOST === '0.0.0.0' ? 'localhost' : HOST;
+    console.log(`ShoppyVault server running at http://${displayHost}:${PORT}`);
+    if (HOST === '0.0.0.0') {
+      console.log(`(Listening on all interfaces — accessible via your LAN IP too)`);
+    }
   });
 }
 
